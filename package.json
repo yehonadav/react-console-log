@@ -1,0 +1,54 @@
+{
+  "name": "react-console-log",
+  "version": "1.0.0",
+  "description": "render console logs as a react component",
+  "author": "yehonadav",
+  "license": "Apache-2.0",
+  "repository": "yehonadav/react-console-log",
+  "main": "dist/index.js",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "build:version": "npm run build && npm version patch && npm publish",
+    "update:version": "git add . && git commit -am \"update\" && git push && npm run build:version",
+    "i:update:version": "npm i && npm run update:version"
+  },
+  "dependencies": {
+    "@material-ui/core": "^4.10.2",
+    "@yehonadav/safestringify": "^1.0.2",
+    "react": "^17.0.1",
+    "react-dom": "^17.0.1",
+    "zustand": "^3.2.0"
+  },
+  "peerDependencies": {
+    "react-dom": ">= 17.0.1 < 2",
+    "react": ">= 17.0.1 < 2"
+  },
+  "devDependencies": {
+    "tslib": "^2.1.0",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.14.5",
+    "@types/react-dom": "^16.9.12",
+    "babel-core": "^6.26.3",
+    "babel-runtime": "^6.26.0",
+    "rollup": "^1.32.1",
+    "rollup-plugin-sass": "^1.2.2",
+    "rollup-plugin-typescript2": "^0.30.0",
+    "typescript": "^4.2.3"
+  },
+  "files": [
+    "dist"
+  ],
+  "keywords": [
+    "common",
+    "frontend",
+    "components",
+    "react",
+    "typescript",
+    "npm"
+  ]
+}
