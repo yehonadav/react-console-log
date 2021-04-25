@@ -1,6 +1,7 @@
 import createStore from "zustand";
 import {getStorageCall, clearDataService} from "@yehonadav/safestorage";
 import {persist} from "zustand/middleware";
+import {logger} from "./service";
 
 export type LogType =
   "log" |
@@ -70,6 +71,11 @@ export const set = useConsoleStore.setState;
 
 // actions
 export const reRenderConsole = ():void => set((s:State)=>({console:{...s.console}}));
+
+export const clearConsole = ():void => set((s:State) => {
+  logger.clear();
+  return {console:{...s.console, logs: []}}
+})
 
 // helpers
 const fetchConsole = (s:State) => s.console;

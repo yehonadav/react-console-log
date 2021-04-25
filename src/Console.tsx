@@ -1,7 +1,7 @@
 import React, {useEffect, FC} from "react";
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import {Grid} from "@material-ui/core";
-import {LogMessage, useConsole} from "./useStore";
+import {Button, Grid} from "@material-ui/core";
+import {clearConsole, LogMessage, useConsole} from "./useStore";
 import {logger} from "./service";
 
 export const useConsoleStyles = makeStyles({
@@ -148,6 +148,9 @@ export const ConsoleLog:FC = () => {
 
   return (
     <div className={classes.root}>
+      <Button onClick={clearConsole}>
+        Clear Console
+      </Button>
     <Grid container spacing={3} className={classes.Grid}>
       {console.logs.map((logMessage, index) =>
         <LogItem logMessage={logMessage} key={index}/>
