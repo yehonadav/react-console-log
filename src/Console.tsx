@@ -7,6 +7,9 @@ import {useConsoleStyles} from "./styles";
 export const LogItem:FC<{logMessage:LogMessage}> = ({logMessage}) => {
   const classes = useConsoleStyles();
 
+  if (typeof logMessage.date === "string")
+    logMessage.date = new Date(logMessage.date);
+
   return (
   <Grid item xs={12} className={classes.messageContainer}>
     <Grid
