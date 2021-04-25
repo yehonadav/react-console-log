@@ -144,11 +144,11 @@ export const ConsoleLog:FC = () => {
   const console = useConsole();
   const classes = useConsoleStyles();
 
-  useEffect(()=>{logger.setVersion("1.0.1")}, []);
+  useEffect(()=>{logger.setVersion("1.0.3")}, []);
 
   return (
     <div className={classes.root}>
-      <Button onClick={clearConsole}>
+      <Button onClick={clearConsole} variant="contained">
         Clear Console
       </Button>
     <Grid container spacing={3} className={classes.Grid}>
