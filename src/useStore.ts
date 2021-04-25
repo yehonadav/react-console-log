@@ -1,4 +1,6 @@
 import createStore from "zustand";
+import {getStorageCall, clearDataService} from "@yehonadav/safestorage";
+import {persist} from "zustand/middleware";
 
 export type LogType =
   "log" |
@@ -42,8 +44,22 @@ export const state:State = {
 
 export const stateCreator = ():State => state;
 
+// persist options
+export const persistOptions = {
+  name: "useConsoleStore", // set a unique name
+  whitelist: ["console"],
+  getStorage: getStorageCall,
+};
+
 // create store
-export const useConsoleStore = createStore<State>(stateCreator);
+export const useConsoleStore = createStore<State>(persist(
+  stateCreator,
+  // @ts-ignore
+  persistOptions
+));
+
+// data will persist even after logout
+clearDataService.excludeLocalStorageItem(persistOptions.name);
 
 // getters
 export const get = useConsoleStore.getState;
