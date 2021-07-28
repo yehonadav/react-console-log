@@ -1,13 +1,13 @@
-import {getConsole, logTypes, reRenderConsole} from "./useStore";
+import { getConsole, LogType, logTypes, reRenderConsole, saveConsoleInStorage } from './useStore'
 import { safeStringify } from "@yehonadav/safestringify";
 
-const _log = console.log;
-const _info = console.info;
-const _error = console.error;
-const _debug = console.debug;
-const _exception = console.exception;
-const _trace = console.trace;
-const _warn = console.warn;
+export const _log = console.log;
+export const _info = console.info;
+export const _error = console.error;
+export const _debug = console.debug;
+export const _exception = console.exception;
+export const _trace = console.trace;
+export const _warn = console.warn;
 
 const setConsoleVersion = (version:string):void => {
   const message = `Console Version ${version}`;
@@ -21,80 +21,60 @@ const setConsoleVersion = (version:string):void => {
   reRenderConsole();
 }
 
-console.log = (...args: any[]) => {
+interface IConsoleMessage {
+  messages: any[];
+  logLevel: LogType;
+}
+
+const sendConsoleMessage = (props:IConsoleMessage) => {
+  const date = new Date();
+  getConsole().logs.push(...props.messages.map(object=>({
+    type: props.logLevel,
+    message: safeStringify(object),
+    object,
+    date,
+  })));
+}
+
+export const consoleLog = (...args: any[]) => {
   _log(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.log,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.log, messages: args });
   reRenderConsole();
 };
 
-console.trace = (...args: any[]) => {
+export const consoleTrace = (...args: any[]) => {
   _trace(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.trace,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.trace, messages: args });
   reRenderConsole();
 };
 
-console.debug = (...args: any[]) => {
+export const consoleDebug = (...args: any[]) => {
   _debug(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.debug,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.debug, messages: args });
   reRenderConsole();
 };
 
-console.info = (...args: any[]) => {
+export const consoleInfo = (...args: any[]) => {
   _info(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.info,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.info, messages: args });
   reRenderConsole();
 };
 
-console.warn = (...args: any[]) => {
+export const consoleWarn = (...args: any[]) => {
   _warn(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.warn,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.warn, messages: args });
   reRenderConsole();
 };
 
-console.error = (...args: any[]) => {
+export const consoleError = (...args: any[]) => {
   _error(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.error,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.error, messages: args });
   reRenderConsole();
 };
 
-console.exception = (...args: any[]) => {
+export const consoleException = (...args: any[]) => {
   _exception(...args);
-  getConsole().logs.push(...args.map(object=>({
-    type: logTypes.exception,
-    message: safeStringify(object),
-    object,
-    date: new Date(),
-  })));
+  sendConsoleMessage({ logLevel: logTypes.exception, messages: args });
   reRenderConsole();
 };
 
@@ -108,12 +88,84 @@ try {
   })
 }
 
+export const consoleLogPersist = (...args: any[]) => {
+  consoleLog(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleTracePersist = (...args: any[]) => {
+  consoleTrace(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleDebugPersist = (...args: any[]) => {
+  consoleDebug(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleInfoPersist = (...args: any[]) => {
+  consoleInfo(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleWarnPersist = (...args: any[]) => {
+  consoleWarn(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleErrorPersist = (...args: any[]) => {
+  consoleError(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const consoleExceptionPersist = (...args: any[]) => {
+  consoleException(...args);
+  saveConsoleInStorage(getConsole());
+};
+
+export const setDefaultLogger = () => {
+  console.log = _log;
+  console.info = _info;
+  console.error = _error;
+  console.debug = _debug;
+  console.exception = _exception;
+  console.trace = _trace;
+  console.warn = _warn;
+}
+
+export const setLoggerForEnabledConsole = () => {
+  console.log = consoleLog;
+  console.trace = consoleTrace;
+  console.debug = consoleDebug;
+  console.info = consoleInfo;
+  console.warn = consoleWarn;
+  console.error = consoleError;
+  console.exception = consoleException;
+}
+
+export const setLoggerForPersistentConsole = () => {
+  console.log = consoleLogPersist;
+  console.trace = consoleTracePersist;
+  console.debug = consoleDebugPersist;
+  console.info = consoleInfoPersist;
+  console.warn = consoleWarnPersist;
+  console.error = consoleErrorPersist;
+  console.exception = consoleExceptionPersist;
+}
+
+export const setLoggerFunctions = (isEnabled: boolean, isPersistent: boolean) => {
+  !isEnabled
+    ? setDefaultLogger()
+    : isPersistent
+    ? setLoggerForPersistentConsole()
+    : setLoggerForEnabledConsole();
+}
+
 export type Logger = Console & {
   setVersion: (version:string) => void;
 }
 
-// @ts-ignore
-const logger: Logger = console;
+const logger = console as Logger;
 
 logger.setVersion = setConsoleVersion;
 
