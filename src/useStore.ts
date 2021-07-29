@@ -1,81 +1,27 @@
-import createStore from "zustand";
-import {getStorageCall, clearDataService, persistLocal} from "@yehonadav/safestorage";
-import {persist} from "zustand/middleware";
-import { logger, setLoggerFunctions } from './service'
+import createStore from 'zustand'
+import { clearDataService, getStorageCall } from '@yehonadav/safestorage'
+import { persist } from 'zustand/middleware'
+import { ConsoleState, PersistOptions, State } from './types'
+import { persistId, persistOptionsName } from './variables'
+import { initConsoleState } from './helpers'
+import { setLoggerFunctions } from './actions'
 
-export type LogType =
-  "log" |
-  "info" |
-  "error" |
-  "debug" |
-  "exception" |
-  "trace" |
-  "warn";
-
-export const logTypes: Record<LogType, LogType> = {
-  log: "log",
-  info: "info",
-  error: "error",
-  debug: "debug",
-  exception: "exception",
-  trace: "trace",
-  warn: "warn",
-}
-
-export type LogMessage = {
-  type: LogType;
-  date: Date;
-  message: string;
-  object: any
-}
-
-export type ConsoleState = {
-  logs: LogMessage[];
-}
-
-export type State = {
-  console: ConsoleState,
-  open: boolean;
-  persist: boolean;
-  enabled: boolean;
-}
-
-const persistOptionsName = "useConsoleStore";
-const persistId = `${persistOptionsName}-console-logs`;
-
-export const saveConsoleInStorage = (console:ConsoleState):void => {
-  persistLocal.setItem(persistId, console);
-}
-
-const initConsoleState = ():ConsoleState => {
-  let consoleLogs = persistLocal.tryToGetItem(persistId).value;
-
-  if (!consoleLogs) {
-    consoleLogs = { logs: [] };
-    saveConsoleInStorage(consoleLogs);
-  }
-
-  return consoleLogs;
-}
-
-export const state:State = {
+const state: State = {
   console: initConsoleState(),
   open: false,
   persist: false,
   enabled: false,
 };
 
-export const stateCreator = ():State => state;
+const stateCreator = ():State => state;
 
-// persist options
-export const persistOptions: { name: string; whitelist: (keyof State)[]; getStorage: typeof getStorageCall } = {
+const persistOptions: PersistOptions = {
   name: persistOptionsName, // set a unique name
   whitelist: ["console", 'open', 'persist', 'enabled'],
   getStorage: getStorageCall,
 };
 
-// create store
-export const useConsoleStore = createStore<State>(persist(
+const useStore = createStore<State>(persist(
   stateCreator,
   persistOptions,
 ));
@@ -85,34 +31,30 @@ clearDataService.excludeLocalStorageItem(persistOptions.name);
 clearDataService.excludeLocalStorageItem(persistId);
 
 // getters
-export const get = useConsoleStore.getState;
-export const getConsole = ():ConsoleState => get().console;
-export const isConsolePersistent = ():boolean => get().persist;
-export const isConsoleOpen = ():boolean => get().open;
-export const isConsoleEnabled = ():boolean => get().enabled;
+const get = useStore.getState;
+const getConsole = ():ConsoleState => get().console;
+const isConsolePersistent = ():boolean => get().persist;
+const isConsoleOpen = ():boolean => get().open;
+const isConsoleEnabled = ():boolean => get().enabled;
 
 // setters
-export const set = useConsoleStore.setState;
-export const setConsolePersistent = (persist:boolean):void => {setLoggerFunctions(isConsoleEnabled(), persist); set({persist})};
-export const setConsoleOpen = (open:boolean):void => set({open});
-export const setConsoleEnabled = (enabled:boolean):void => {setLoggerFunctions(enabled, isConsolePersistent()); set({enabled})};
-export const setConsolePersistentTrue = ():void => setConsolePersistent(true);
-export const setConsoleOpenTrue = ():void => setConsoleOpen(true);
-export const setConsoleEnabledTrue = ():void => setConsoleEnabled(true);
-export const setConsolePersistentFalse = ():void => setConsolePersistent(false);
-export const setConsoleOpenFalse = ():void => setConsoleOpen(false);
-export const setConsoleEnabledFalse = ():void => setConsoleEnabled(false);
-export const toggleConsolePersistent = ():void => setConsolePersistent(!get().persist);
-export const toggleConsoleOpen = ():void => setConsoleOpen(!get().open);
-export const toggleConsoleEnabled = ():void => setConsoleEnabled(!get().enabled);
+const set = useStore.setState;
+const setConsoleLogs = ():void => set(s => ({console:{...s.console, logs: []}}));
+const setConsolePersistent = (persist:boolean):void => {setLoggerFunctions(isConsoleEnabled(), persist); set({persist})};
+const setConsoleOpen = (open:boolean):void => set({open});
+const setConsoleEnabled = (enabled:boolean):void => {setLoggerFunctions(enabled, isConsolePersistent()); set({enabled})};
+const setConsolePersistentTrue = ():void => setConsolePersistent(true);
+const setConsoleOpenTrue = ():void => setConsoleOpen(true);
+const setConsoleEnabledTrue = ():void => setConsoleEnabled(true);
+const setConsolePersistentFalse = ():void => setConsolePersistent(false);
+const setConsoleOpenFalse = ():void => setConsoleOpen(false);
+const setConsoleEnabledFalse = ():void => setConsoleEnabled(false);
+const toggleConsolePersistent = ():void => setConsolePersistent(!get().persist);
+const toggleConsoleOpen = ():void => setConsoleOpen(!get().open);
+const toggleConsoleEnabled = ():void => setConsoleEnabled(!get().enabled);
 
 // actions
-export const reRenderConsole = ():void => set((s:State)=>({console:{...s.console}}));
-
-export const clearConsole = ():void => set((s:State) => {
-  logger.clear();
-  return {console:{...s.console, logs: []}}
-})
+const reRenderConsole = ():void => set((s:State)=>({console:{...s.console}}));
 
 // helpers
 const fetchConsole = (s:State) => s.console;
@@ -121,7 +63,39 @@ const fetchIsConsoleOpen = (s:State) => s.open;
 const fetchIsConsoleEnabled = (s:State) => s.enabled;
 
 // hooks
-export const useConsole = ():ConsoleState => useConsoleStore(fetchConsole);
-export const useIsConsolePersistent = ():boolean => useConsoleStore(fetchIsConsolePersistent);
-export const useIsConsoleOpen = ():boolean => useConsoleStore(fetchIsConsoleOpen);
-export const useIsConsoleEnabled = ():boolean => useConsoleStore(fetchIsConsoleEnabled);
+const useConsole = ():ConsoleState => useStore(fetchConsole);
+const useIsConsolePersistent = ():boolean => useStore(fetchIsConsolePersistent);
+const useIsConsoleOpen = ():boolean => useStore(fetchIsConsoleOpen);
+const useIsConsoleEnabled = ():boolean => useStore(fetchIsConsoleEnabled);
+
+export {
+  useStore as useConsoleStore,
+  get as getConsoleStoreState,
+  set as setConsoleStoreState,
+
+  getConsole,
+  isConsolePersistent,
+  isConsoleOpen,
+  isConsoleEnabled,
+
+  setConsoleLogs,
+  setConsolePersistent,
+  setConsoleOpen,
+  setConsoleEnabled,
+  setConsolePersistentTrue,
+  setConsoleOpenTrue,
+  setConsoleEnabledTrue,
+  setConsolePersistentFalse,
+  setConsoleOpenFalse,
+  setConsoleEnabledFalse,
+  toggleConsolePersistent,
+  toggleConsoleOpen,
+  toggleConsoleEnabled,
+
+  reRenderConsole,
+
+  useConsole,
+  useIsConsolePersistent,
+  useIsConsoleOpen,
+  useIsConsoleEnabled,
+}

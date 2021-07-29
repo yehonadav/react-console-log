@@ -13,12 +13,13 @@
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "build:version": "npm run build && npm version patch && npm publish",
+    "build:version": "npm run build && npm version patch && npm publish && git push",
     "update:version": "git add . && git commit -am \"update\" && git push && npm run build:version",
     "i:update:version": "npm i && npm run update:version"
   },
   "dependencies": {
     "@material-ui/core": "^4.12.2",
+    "@material-ui/icons": "^4.11.2",
     "@yehonadav/safestorage": "^1.0.10",
     "@yehonadav/safestringify": "^1.0.7",
     "react": "^17.0.1",
