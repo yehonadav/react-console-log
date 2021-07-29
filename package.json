@@ -1,6 +1,6 @@
 {
   "name": "react-console-log",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "description": "render console logs as a react component",
   "author": "yehonadav",
   "license": "Apache-2.0",
@@ -13,7 +13,7 @@
   "scripts": {
     "build": "rollup -c",
     "start": "rollup -c -w",
-    "build:version": "npm run build && npm version patch && npm publish && git push",
+    "build:version": "npm run build && npm version patch && npm publish && git commit -am \"new version\" && git push",
     "update:version": "git add . && git commit -am \"update\" && git push && npm run build:version",
     "i:update:version": "npm i && npm run update:version"
   },
