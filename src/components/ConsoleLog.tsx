@@ -32,8 +32,8 @@ export const ConsoleLog:FC = () => {
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
-        <Grid item>
-          <OpenConsoleButton style={{marginBottom: 15}}/>
+        <Grid item style={{paddingBottom:15}}>
+          <OpenConsoleButton/>
         </Grid>
         <Grid item>
           <ClearConsoleButton/>
