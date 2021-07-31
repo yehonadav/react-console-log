@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react'
 import { Grid } from '@material-ui/core'
-import { useConsole, useIsConsoleOpen } from '../useStore'
+import { getConsoleStoreState, useConsole, useIsConsoleOpen } from '../useStore'
 import { logger } from '../service'
 import { useConsoleStyles } from '../styles'
 import { ClearConsoleButton } from './ClearConsoleButton'
@@ -9,19 +9,26 @@ import { PersistConsoleButton } from './PersistConsoleButton'
 import { OpenConsoleButton } from './OpenConsoleButton'
 import { LogItem } from './LogItem'
 import { version } from '../variables'
+import { setLoggerFunctions } from '../actions'
+
+const useOnConsoleLoad = () => {
+  useEffect(()=>{
+    logger.setVersion(version);
+    const { enabled, persist } = getConsoleStoreState();
+    setLoggerFunctions(enabled, persist);
+  }, []);
+}
 
 export const ConsoleLog:FC = () => {
   const consoleLog = useConsole();
   const classes = useConsoleStyles();
   const open = useIsConsoleOpen();
-  console.log({open});
 
-  useEffect(()=>{logger.setVersion(version)}, []);
+  useOnConsoleLoad();
 
   if (!open)
     return <OpenConsoleButton/>;
 
-  console.log({logs:consoleLog.logs})
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>

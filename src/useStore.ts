@@ -41,7 +41,7 @@ const isConsoleEnabled = ():boolean => get().enabled;
 const set = useStore.setState;
 const setConsoleLogs = ():void => set(s => ({console:{...s.console, logs: []}}));
 const setConsolePersistent = (persist:boolean):void => {setLoggerFunctions(isConsoleEnabled(), persist); set({persist})};
-const setConsoleOpen = (open:boolean):void => {set({open});console.log({ opensetstate:open })};
+const setConsoleOpen = (open:boolean):void => set({open});
 const setConsoleEnabled = (enabled:boolean):void => {setLoggerFunctions(enabled, isConsolePersistent()); set({enabled})};
 const setConsolePersistentTrue = ():void => setConsolePersistent(true);
 const setConsoleOpenTrue = ():void => setConsoleOpen(true);
