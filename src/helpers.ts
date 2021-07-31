@@ -13,10 +13,7 @@ export const initConsoleState = (): ConsoleState => {
     consoleLogs = { logs: [] };
     saveConsoleInStorage(consoleLogs);
   }
-
-  else
-    consoleLogs.logs.forEach(log => {log.date = new Date(log.date)});
-
+  
   return consoleLogs
 }
 
