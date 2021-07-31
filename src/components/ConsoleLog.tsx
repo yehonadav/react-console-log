@@ -21,6 +21,7 @@ export const ConsoleLog:FC = () => {
   if (!open)
     return <OpenConsoleButton/>;
 
+  console.log({logs:consoleLog.logs})
   return (
     <div className={classes.root}>
       <Grid container spacing={2}>
