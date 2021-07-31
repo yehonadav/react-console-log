@@ -14,7 +14,7 @@ export const ConsoleLog:FC = () => {
   const console = useConsole();
   const classes = useConsoleStyles();
   const open = useIsConsoleOpen();
-
+console.log({open});
   useEffect(()=>{logger.setVersion(version)}, []);
 
   if (!open)
