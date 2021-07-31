@@ -11,10 +11,11 @@ import { LogItem } from './LogItem'
 import { version } from '../variables'
 
 export const ConsoleLog:FC = () => {
-  const console = useConsole();
+  const consoleLog = useConsole();
   const classes = useConsoleStyles();
   const open = useIsConsoleOpen();
-console.log({open});
+  console.log({open});
+
   useEffect(()=>{logger.setVersion(version)}, []);
 
   if (!open)
@@ -38,7 +39,7 @@ console.log({open});
       </Grid>
 
       <Grid container spacing={3} className={classes.Grid}>
-        {console.logs.map((logMessage, index) =>
+        {consoleLog.logs.map((logMessage, index) =>
           <LogItem logMessage={logMessage} key={index}/>
         )}
       </Grid>
