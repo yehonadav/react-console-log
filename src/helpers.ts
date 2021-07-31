@@ -1,8 +1,6 @@
-import { ConsoleState, State } from './types'
+import { ConsoleState } from './types'
 import { persistLocal } from '@yehonadav/safestorage'
 import { persistId } from './variables'
-import { logger } from './service'
-import { setConsoleStoreState } from './useStore'
 
 export const saveConsoleInStorage = (console: ConsoleState): void => {
   persistLocal.setItem(persistId, console)
@@ -22,7 +20,3 @@ export const initConsoleState = (): ConsoleState => {
   return consoleLogs
 }
 
-export const clearConsole = (): void => setConsoleStoreState((s: State) => {
-  logger.clear()
-  return { console: { ...s.console, logs: [] } }
-});
