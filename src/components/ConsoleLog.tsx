@@ -1,6 +1,6 @@
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 import { Grid } from '@material-ui/core'
-import { getConsole, getConsoleStoreState, useConsole, useIsConsoleOpen } from '../useStore'
+import { getConsoleStoreState, useConsole, useIsConsoleOpen } from '../useStore'
 import { logger } from '../service'
 import { useConsoleStyles } from '../styles'
 import { ClearConsoleButton } from './ClearConsoleButton'
@@ -11,28 +11,27 @@ import { LogItem } from './LogItem'
 import { version } from '../variables'
 import { setLoggerFunctions } from '../actions'
 
-const useOnConsoleLoad = () => {
-  const [ready, setReady] = useState(false);
+const onConsoleLoad = () => {
+  const { enabled, persist, console } = getConsoleStoreState();
 
-  useEffect(()=>{
-    logger.setVersion(version);
-    const { enabled, persist } = getConsoleStoreState();
-    setLoggerFunctions(enabled, persist);
-    getConsole().logs.forEach(log => {log.date = new Date(log.date)});
-    setReady(true);
-  }, []);
+  // make sure persist dates are not strings
+  console.logs.forEach(log => {log.date = new Date(log.date)});
 
-  return ready;
+  // set correct functions on load
+  setLoggerFunctions(enabled, persist);
+
+  // set console version
+  logger.setVersion(version);
 }
+
+onConsoleLoad();
 
 export const ConsoleLog:FC = () => {
   const consoleLog = useConsole();
   const classes = useConsoleStyles();
   const open = useIsConsoleOpen();
 
-  const ready = useOnConsoleLoad();
-
-  if (!open || !ready)
+  if (!open)
     return <OpenConsoleButton/>;
 
   return (
