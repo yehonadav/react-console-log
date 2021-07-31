@@ -23,62 +23,57 @@ const sendConsoleMessage = (props: IConsoleMessage) => {
 }
 
 export const setConsoleVersion = (version: string): void => {
-  const message = `Console Version ${version}`
-  _log(message)
-  getConsole().logs.splice(0, 0, {
-    type: logTypes.log,
-    message,
-    object: message,
-    date: new Date()
-  })
-  reRenderConsole()
+  const message = `Console Version ${version}`;
+  _log(message);
+  sendConsoleMessage({ logLevel: logTypes.log, messages: [message] });
+  reRenderConsole();
 }
 
 export const consoleLog = (...args: any[]) => {
-  _log(...args)
-  sendConsoleMessage({ logLevel: logTypes.log, messages: args })
-  reRenderConsole()
+  _log(...args);
+  sendConsoleMessage({ logLevel: logTypes.log, messages: args });
+  reRenderConsole();
 }
 
 export const consoleTrace = (...args: any[]) => {
-  _trace(...args)
-  sendConsoleMessage({ logLevel: logTypes.trace, messages: args })
-  reRenderConsole()
+  _trace(...args);
+  sendConsoleMessage({ logLevel: logTypes.trace, messages: args });
+  reRenderConsole();
 }
 
 export const consoleDebug = (...args: any[]) => {
-  _debug(...args)
-  sendConsoleMessage({ logLevel: logTypes.debug, messages: args })
-  reRenderConsole()
+  _debug(...args);
+  sendConsoleMessage({ logLevel: logTypes.debug, messages: args });
+  reRenderConsole();
 }
 
 export const consoleInfo = (...args: any[]) => {
-  _info(...args)
-  sendConsoleMessage({ logLevel: logTypes.info, messages: args })
-  reRenderConsole()
+  _info(...args);
+  sendConsoleMessage({ logLevel: logTypes.info, messages: args });
+  reRenderConsole();
 }
 
 export const consoleWarn = (...args: any[]) => {
-  _warn(...args)
-  sendConsoleMessage({ logLevel: logTypes.warn, messages: args })
-  reRenderConsole()
+  _warn(...args);
+  sendConsoleMessage({ logLevel: logTypes.warn, messages: args });
+  reRenderConsole();
 }
 
 export const consoleError = (...args: any[]) => {
-  _error(...args)
-  sendConsoleMessage({ logLevel: logTypes.error, messages: args })
-  reRenderConsole()
+  _error(...args);
+  sendConsoleMessage({ logLevel: logTypes.error, messages: args });
+  reRenderConsole();
 }
 
 export const consoleException = (...args: any[]) => {
-  _exception(...args)
-  sendConsoleMessage({ logLevel: logTypes.exception, messages: args })
-  reRenderConsole()
+  _exception(...args);
+  sendConsoleMessage({ logLevel: logTypes.exception, messages: args });
+  reRenderConsole();
 }
 
 export const consoleLogPersist = (...args: any[]) => {
-  consoleLog(...args)
-  saveConsoleInStorage(getConsole())
+  consoleLog(...args);
+  saveConsoleInStorage(getConsole());
 }
 
 export const consoleTracePersist = (...args: any[]) => {
