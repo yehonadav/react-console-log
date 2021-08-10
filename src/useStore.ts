@@ -17,7 +17,7 @@ const stateCreator = ():State => state;
 
 const persistOptions: PersistOptions = {
   name: persistOptionsName, // set a unique name
-  whitelist: ["console", 'open', 'persist', 'enabled'],
+  whitelist: ['open', 'persist', 'enabled'],
   getStorage: getStorageCall,
 };
 
